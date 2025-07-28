@@ -43,8 +43,8 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: filtered-results
-          path: filtered-results.json
+          name: scan-results
+          path: results.json
           
   import-issues:
     needs: veracode-scan
@@ -55,9 +55,9 @@ jobs:
       - name: get scan results
         uses: actions/download-artifact@v4
         with:
-          name: filtered-results
+          name: scan-results
 
       - name: import flaws as issues
         uses: veracode/veracode-flaws-to-issues@v2.1.19
         with:
-          scan-results-json: 'filtered-results.json'
+          scan-results-json: 'results.json'
