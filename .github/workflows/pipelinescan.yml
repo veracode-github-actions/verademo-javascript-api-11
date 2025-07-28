@@ -43,34 +43,34 @@ jobs:
             fi
           done
 
-      # - name: Move filtered results to verascan folder
-      #   run: |
-      #     mkdir -p verascan
-      #     cp filtered-results.json verascan/filtered_results.json
+      - name: Move filtered results to verascan folder
+        run: |
+          mkdir -p verascan
+          cp results.json verascan/results.json
 
       - name: Upload filtered scan results
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: filtered-results
-          path: verascan/filtered_results.json
+          path: verascan/results.json
           
-  import-issues:
-    needs: veracode-scan
-    runs-on: ubuntu-latest
-    permissions:
-      issues: write
-    steps:
-      - name: get scan results
-        uses: actions/download-artifact@v4
-        with:
-          name: filtered-results
+  # import-issues:
+  #   needs: veracode-scan
+  #   runs-on: ubuntu-latest
+  #   permissions:
+  #     issues: write
+  #   steps:
+  #     - name: get scan results
+  #       uses: actions/download-artifact@v4
+  #       with:
+  #         name: filtered-results
 
-      - name: import flaws as issues
-        uses: veracode/veracode-flaws-to-issues@v2.1.19
-        with:
-          scan-results-json: 'filtered_results.json'
-          source-base-path-1: "^com/veracode:src/main/java/com/veracode"
-          source-base-path-2: "^WEB-INF:src/main/webapp/WEB-INF"
+  #     - name: import flaws as issues
+  #       uses: veracode/veracode-flaws-to-issues@v2.1.19
+  #       with:
+  #         scan-results-json: 'filtered_results.json'
+  #         source-base-path-1: "^com/veracode:src/main/java/com/veracode"
+  #         source-base-path-2: "^WEB-INF:src/main/webapp/WEB-INF"
 
 # che
