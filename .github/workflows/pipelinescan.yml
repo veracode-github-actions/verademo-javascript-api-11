@@ -51,8 +51,8 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: scan-results
-          path: filtered-results.json
+          name: filtered-results
+          path: verascan/filtered-results.json
           
   import-issues:
     needs: veracode-scan
