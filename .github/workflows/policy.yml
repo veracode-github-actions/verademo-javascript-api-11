@@ -60,7 +60,7 @@ jobs:
       #		for a more elaborate method
       - name: get policy flaws
         run: |
-          cd $GITHUB_WORKSPACE
+          cd /github/workspace
           export VERACODE_API_KEY_ID=${{ secrets.VID }}
           export VERACODE_API_KEY_SECRET=${{ secrets.VKEY }}
           guid=$(http --auth-type veracode_hmac GET "https://api.veracode.com/appsec/v1/applications?name=Recent" | jq -r '._embedded.applications[0].guid') 
