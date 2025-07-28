@@ -46,18 +46,16 @@ jobs:
           name: scan-results
           path: results.json
           
-  import-issues:
-    needs: veracode-scan
-    runs-on: ubuntu-latest
-    permissions:
-      issues: write
-    steps:
-      - name: get scan results
-        uses: actions/download-artifact@v4
+      - name: Convert pipeline scan output to SARIF format
+        id: convert
+        uses: Veracode/veracode-pipeline-scan-results-to-sarif@v1.0.7
         with:
-          name: scan-results
+          pipeline-results-json: results.json
+          output-results-sarif: veracode-results.sarif
+          source-base-path-1: "^com/veracode:src/main/java/com/veracode"
+          source-base-path-2: "^WEB-INF:src/main/webapp/WEB-INF"
 
-      - name: import flaws as issues
-        uses: veracode/veracode-flaws-to-issues@v2.1.19
-        with:
-          scan-results-json: 'results.json'
+      - name: upload sarif file to repository
+        uses: github/codeql-action/upload-sarif@v3
+        with: # Path to SARIF file relative to the root of the repository
+          sarif_file: veracode-results.sarif
