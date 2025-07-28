@@ -69,5 +69,7 @@ jobs:
         uses: veracode/veracode-flaws-to-issues@v2.1.19
         with:
           scan-results-json: 'filtered_results.json'
+          source-base-path-1: "^com/veracode:src/main/java/com/veracode"
+          source-base-path-2: "^WEB-INF:src/main/webapp/WEB-INF"
 
 # che
