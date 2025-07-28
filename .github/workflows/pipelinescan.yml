@@ -40,7 +40,7 @@ jobs:
           done
           
   import-issues:
-    needs: scan
+    needs: veracode-scan
     runs-on: ubuntu-latest
     permissions:
       issues: write
