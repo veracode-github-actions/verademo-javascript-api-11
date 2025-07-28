@@ -35,9 +35,9 @@ jobs:
               echo "Scanning $file..."
               ./veracode static scan "$file" \
                 --policy-file Al-Test.json \
-                --json_output true \
-                --json_output_file results.json \
-                --filtered_json_output_file filtered_results.json \
-                --fail_on_severity "High,Medium"
+                -jo true \
+                -jf results.json \
+                -fjf filtered_results.json \
+                --fail-on-severity "High,Medium"
             fi
           done
