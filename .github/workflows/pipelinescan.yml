@@ -38,14 +38,14 @@ jobs:
           for file in verascan/*; do
             if [ -f "$file" ]; then
               echo "Scanning $file..."
-              ./veracode static scan "$file" --policy-file Al-Test.json --results-file "results.json" --filtered-json-output-file #--policy-file Al-Test.json --fail-on-severity High --filtered-json-output-file 
+              ./veracode static scan "$file" --policy-file Al-Test.json --results-file "results.json" --filtered-json-output-file "filtered-results.json" #--policy-file Al-Test.json --fail-on-severity High --filtered-json-output-file 
             fi
           done
 
-      - name: Move filtered results to verascan folder
-        run: |
-          mkdir -p verascan
-          cp filtered-results.json verascan/filtered_results.json
+      # - name: Move filtered results to verascan folder
+      #   run: |
+      #     mkdir -p verascan
+      #     cp filtered-results.json verascan/filtered_results.json
 
       - name: Upload filtered scan results
         if: always()
