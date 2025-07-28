@@ -1,4 +1,5 @@
 # name: Veracode Auto-Packaging and Pipeline Scan
+#works but the issues were not mentioned as high in the code scanning alerts
 
 on:
   push:
@@ -51,12 +52,16 @@ jobs:
           
       - name: Convert pipeline scan output to SARIF format
         id: convert
-        uses: veracode/veracode-pipeline-scan-results-to-sarif@ff08ae5b45d5384cb4679932f184c013d34da9be
+        uses: Veracode/veracode-pipeline-scan-results-to-sarif@v1.0.7
         with:
           pipeline-results-json: results.json
-      - uses: github/codeql-action/upload-sarif@v3
-        with:
-          # Path to SARIF file relative to the root of the repository
+          output-results-sarif: veracode-results.sarif
+          source-base-path-1: "^com/veracode:src/main/java/com/veracode"
+          source-base-path-2: "^WEB-INF:src/main/webapp/WEB-INF"
+
+      - name: upload sarif file to repository
+        uses: github/codeql-action/upload-sarif@v3
+        with: # Path to SARIF file relative to the root of the repository
           sarif_file: veracode-results.sarif
 
 # check
