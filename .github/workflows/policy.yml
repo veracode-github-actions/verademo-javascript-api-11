@@ -71,6 +71,13 @@ jobs:
           echo TOTAL_FLAWS: ${total_flaws}
           http --auth-type veracode_hmac GET "https://api.veracode.com/appsec/v2/applications/${guid}/findings?scan_type=STATIC&violates_policy=True&size=${total_flaws}" > results.json
 
+      - name: Upload filtered scan results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: scan-results
+          path: results.json
+
       - name: Convert results to SARIF
         uses: veracode/veracode-pipeline-scan-results-to-sarif@v2.0.4
         with:
