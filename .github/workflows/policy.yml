@@ -67,21 +67,21 @@ jobs:
           echo GUID: ${guid}
           total_flaws=$(http --auth-type veracode_hmac GET "https://api.veracode.com/appsec/v2/applications/${guid}/findings?scan_type=STATIC&violates_policy=True" | jq -r '.page.total_elements')
           echo TOTAL_FLAWS: ${total_flaws}
-          http --auth-type veracode_hmac GET "https://api.veracode.com/appsec/v2/applications/${guid}/findings?scan_type=STATIC&violates_policy=True&size=${total_flaws}" > results.json
-          ls -l results.json
+          http --auth-type veracode_hmac GET "https://api.veracode.com/appsec/v2/applications/${guid}/findings?scan_type=STATIC&violates_policy=True&size=${total_flaws}" > /tmp/results.json
+          ls -lh /tmp/results.json
 
       - name: Upload filtered scan results
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: scan-results
-          path: results.json
+          path: /tmp/results.json
 
       - name: Convert pipeline scan output to SARIF format
         id: convert
         uses: veracode/veracode-pipeline-scan-results-to-sarif@v2.0.4
         with:
-          pipeline-results-json: results.json
+          pipeline-results-json: /tmp/results.json
       - uses: github/codeql-action/upload-sarif@v3
         with:
           # Path to SARIF file relative to the root of the repository
