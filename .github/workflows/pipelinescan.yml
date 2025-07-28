@@ -26,6 +26,7 @@ jobs:
           fi
 
       - name: Veracode Pipeline Scan
+        continue-on-error: true
         env:
           VERACODE_API_KEY_ID: ${{ secrets.VID }}
           VERACODE_API_KEY_SECRET: ${{ secrets.VKEY }}
@@ -36,4 +37,19 @@ jobs:
               echo "Scanning $file..."
               ./veracode static scan "$file" --fail-on-severity High --filtered-json-output-file #--results-file "results.json" --policy-file Al-Test.json
             fi
-          done
+          
+    import-issues:
+      needs: scan
+      runs-on: ubuntu-latest
+      permissions:
+        issues: write
+      steps:
+        - name: get scan results
+          uses: actions/download-artifact@v3
+          with:
+            name: filtered-results
+
+        - name: import flaws as issues
+          uses: veracode/veracode-flaws-to-issues@v2.1.19
+          with:
+            scan-results-json: 'filtered_results.json'
