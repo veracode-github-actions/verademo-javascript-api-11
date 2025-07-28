@@ -38,7 +38,7 @@ jobs:
           for file in verascan/*; do
             if [ -f "$file" ]; then
               echo "Scanning $file..."
-              ./veracode static scan "$file" --policy-file Al-Test.json --filtered-json-output-file #--results-file "results.json" --policy-file Al-Test.json --fail-on-severity High 
+              ./veracode static scan "$file" --policy-file Al-Test.json --results-file "results.json" --filtered-json-output-file #--policy-file Al-Test.json --fail-on-severity High --filtered-json-output-file 
             fi
           done
 
@@ -49,14 +49,20 @@ jobs:
           name: scan-results
           path: results.json
           
-      - name: Convert pipeline scan output to SARIF format
-        id: convert
-        uses: veracode/veracode-pipeline-scan-results-to-sarif@ff08ae5b45d5384cb4679932f184c013d34da9be
-        with:
-          pipeline-results-json: results.json
-      - uses: github/codeql-action/upload-sarif@v3
-        with:
-          # Path to SARIF file relative to the root of the repository
-          sarif_file: veracode-results.sarif
+  import-issues:
+  needs: veracode-scan
+  runs-on: ubuntu-latest
+  permissions:
+    issues: write
+  steps:
+    - name: get scan results
+      uses: actions/download-artifact@v3
+      with:
+        name: filtered-results
+
+    - name: import flaws as issues
+      uses: veracode/veracode-flaws-to-issues@v2.1.19
+      with:
+        scan-results-json: 'filtered_results.json'
 
 # ch
