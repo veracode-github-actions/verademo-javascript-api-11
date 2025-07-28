@@ -28,30 +28,25 @@ jobs:
             exit 1
           fi
 
-      # - name: Upload Verascan Artifact (Optional)
-      #   uses: actions/upload-artifact@v3
-      #   with:
-      #     name: VeracodeScanResults
-      #     path: verascan
-
-      - name: Veracode Upload And Scan
-        continue-on-error: true
-        uses: veracode/veracode-uploadandscan-action@0.2.7
-        with:
-            appname: 'Recent'
-            createprofile: false
-            filepath: './verascan'
-            version: ${{ github.run_id }}
-            vid: '${{ secrets.VID }}'
-            vkey: '${{ secrets.VKEY }}'
-            # createsandbox: 'false'
-            # sandboxname: 'SANDBOXNAME'
-            scantimeout: 20
-            # exclude: '*.js'
-            # include: '*.war'
-            criticality: 'VeryHigh'
-            deleteincompletescan: 2
-            publishedscansonly: 'true'
+  #     - name: Veracode Upload And Scan
+  #       continue-on-error: true
+  #       uses: veracode/veracode-uploadandscan-action@0.2.7
+  #       with:
+  #           appname: 'Recent'
+  #           createprofile: false
+  #           filepath: './verascan'
+  #           version: ${{ github.run_id }}
+  #           vid: '${{ secrets.VID }}'
+  #           vkey: '${{ secrets.VKEY }}'
+  #           # createsandbox: 'false'
+  #           # sandboxname: 'SANDBOXNAME'
+  #           scantimeout: 20
+  #           # exclude: '*.js'
+  #           # include: '*.war'
+  #           criticality: 'VeryHigh'
+  #           deleteincompletescan: 2
+  #           scanpollinginterval: '30'
+  #           publishedscansonly: 'true'
 
   get-policy-flaws:
     needs: veracode-scan
@@ -73,6 +68,7 @@ jobs:
           total_flaws=$(http --auth-type veracode_hmac GET "https://api.veracode.com/appsec/v2/applications/${guid}/findings?scan_type=STATIC&violates_policy=True" | jq -r '.page.total_elements')
           echo TOTAL_FLAWS: ${total_flaws}
           http --auth-type veracode_hmac GET "https://api.veracode.com/appsec/v2/applications/${guid}/findings?scan_type=STATIC&violates_policy=True&size=${total_flaws}" > results.json
+          ls -l results.json
 
       - name: Upload filtered scan results
         if: always()
@@ -81,14 +77,12 @@ jobs:
           name: scan-results
           path: results.json
 
-      - name: Convert results to SARIF
+      - name: Convert pipeline scan output to SARIF format
+        id: convert
         uses: veracode/veracode-pipeline-scan-results-to-sarif@v2.0.4
         with:
-          scan-type: "policy"
-          results-json: "results.json"
-          output-results-sarif: "veracode-results.sarif"
-
-      - name: Upload SARIF to GitHub Code Scanning
-        uses: github/codeql-action/upload-sarif@v3
+          pipeline-results-json: results.json
+      - uses: github/codeql-action/upload-sarif@v3
         with:
+          # Path to SARIF file relative to the root of the repository
           sarif_file: veracode-results.sarif
