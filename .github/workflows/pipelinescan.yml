@@ -38,7 +38,7 @@ jobs:
           for file in verascan/*; do
             if [ -f "$file" ]; then
               echo "Scanning $file..."
-              ./veracode static scan "$file" --policy-file "Al-Test.json" --results-file "results.json" --filtered-json-output-file
+              ./veracode static scan "$file" --policy-file "Al-Test.json" --results-file "results.json" --filtered-json-output-file "filtered-results.json"
             fi
           done
 
@@ -69,5 +69,7 @@ jobs:
         uses: veracode/veracode-flaws-to-issues@v2.2.25
         with:
           scan-results-json: 'filtered_results.json'
+          source-base-path-1: "^com/veracode:src/main/java/com/veracode"
+          source-base-path-2: "^WEB-INF:src/main/webapp/WEB-INF"
 
 # che
