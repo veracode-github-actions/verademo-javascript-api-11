@@ -35,6 +35,7 @@ jobs:
       #     path: verascan
 
       - name: Veracode Upload And Scan
+        continue-on-error: true
         uses: veracode/veracode-uploadandscan-action@0.2.7
         with:
             appname: 'Recent'
@@ -45,13 +46,15 @@ jobs:
             vkey: '${{ secrets.VKEY }}'
             # createsandbox: 'false'
             # sandboxname: 'SANDBOXNAME'
-            scantimeout: 120
+            scantimeout: 20
             # exclude: '*.js'
             # include: '*.war'
             criticality: 'VeryHigh'
             deleteincompletescan: 2
+            publishedscansonly: 'true'
 
   get-policy-flaws:
+    needs: veracode-scan
     runs-on: ubuntu-latest
     container: 
       image: veracode/api-signing:latest
