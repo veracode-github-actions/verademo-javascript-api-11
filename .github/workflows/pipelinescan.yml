@@ -42,6 +42,11 @@ jobs:
             fi
           done
 
+      - name: Move filtered results to verascan folder
+        run: |
+          mkdir -p verascan
+          cp filtered-results.json verascan/filtered_results.json
+
       - name: Upload filtered scan results
         if: always()
         uses: actions/upload-artifact@v4
