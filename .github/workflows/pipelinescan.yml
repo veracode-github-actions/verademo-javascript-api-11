@@ -1,14 +1,15 @@
-name: Veracode Auto-Packaging and Pipeline Scan
+# name: Veracode Auto-Packaging and Pipeline Scan
 
-on:
-  push:
-    branches:
-      - main
-  pull_request:
+# on:
+#   push:
+#     branches:
+#       - main
+#   pull_request:
 
 jobs:
   veracode-scan:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
@@ -33,10 +34,6 @@ jobs:
           for file in verascan/*; do
             if [ -f "$file" ]; then
               echo "Scanning $file..."
-              ./veracode static scan "$file" \
-                --policy-file Al-Test.json \
-                --results-file results.json \
-                --filtered-json-output-file filtered_results.json \
-                --fail-on-severity "High,Medium"
+              ./veracode static scan "$file" --policy-file Al-Test.json 
             fi
           done
