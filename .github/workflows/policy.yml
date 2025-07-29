@@ -60,7 +60,9 @@ jobs:
       #		for a more elaborate method
       - name: get policy flaws
         run: |
-          cd $GITHUB_WORKSPACE
+          mkdir -p /tmp/veracode_output
+          chmod 777 /tmp/veracode_output
+          cd /tmp/veracode_output
           export VERACODE_API_KEY_ID=${{ secrets.VID }}
           export VERACODE_API_KEY_SECRET=${{ secrets.VKEY }}
           guid=$(http --auth-type veracode_hmac GET "https://api.veracode.com/appsec/v1/applications?name=Recent" | jq -r '._embedded.applications[0].guid') 
@@ -75,13 +77,13 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: scan-results
-          path: results.json
+          path: /tmp/veracode_output/results.json
 
       - name: Convert pipeline scan output to SARIF format
         id: convert
         uses: veracode/veracode-pipeline-scan-results-to-sarif@v2.0.4
         with:
-          pipeline-results-json: results.json
+          pipeline-results-json: /tmp/veracode_output/results.json
       - uses: github/codeql-action/upload-sarif@v3
         with:
           # Path to SARIF file relative to the root of the repository
