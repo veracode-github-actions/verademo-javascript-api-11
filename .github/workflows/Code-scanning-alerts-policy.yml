@@ -1,3 +1,5 @@
+# This script does Autopackaging, policy scan, upload the results to the code scanning alerts
+
 name: Veracode Auto-Packaging and Scan
 
 on:
@@ -28,25 +30,25 @@ jobs:
             exit 1
           fi
 
-  #     - name: Veracode Upload And Scan
-  #       continue-on-error: true
-  #       uses: veracode/veracode-uploadandscan-action@0.2.7
-  #       with:
-  #           appname: 'Recent'
-  #           createprofile: false
-  #           filepath: './verascan'
-  #           version: ${{ github.run_id }}
-  #           vid: '${{ secrets.VID }}'
-  #           vkey: '${{ secrets.VKEY }}'
-  #           # createsandbox: 'false'
-  #           # sandboxname: 'SANDBOXNAME'
-  #           scantimeout: 20
-  #           # exclude: '*.js'
-  #           # include: '*.war'
-  #           criticality: 'VeryHigh'
-  #           deleteincompletescan: 2
-  #           scanpollinginterval: '30'
-  #           publishedscansonly: 'true'
+      - name: Veracode Upload And Scan
+        continue-on-error: true
+        uses: veracode/veracode-uploadandscan-action@0.2.7
+        with:
+            appname: 'Recent'
+            createprofile: false
+            filepath: './verascan'
+            version: ${{ github.run_id }}
+            vid: '${{ secrets.VID }}'
+            vkey: '${{ secrets.VKEY }}'
+            # createsandbox: 'false'
+            # sandboxname: 'SANDBOXNAME'
+            scantimeout: 20
+            # exclude: '*.js'
+            # include: '*.war'
+            criticality: 'VeryHigh'
+            deleteincompletescan: 2
+            scanpollinginterval: '30'
+            publishedscansonly: 'true'
 
   get-policy-flaws:
     needs: veracode-scan

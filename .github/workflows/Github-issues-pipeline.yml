@@ -1,3 +1,5 @@
+# This script does Autopackaging, pipeline scan (using jar), upload the results to Github issues
+
 name: Veracode Auto-Packaging and Pipeline Scan
 
 on:
