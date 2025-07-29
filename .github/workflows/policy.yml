@@ -53,6 +53,7 @@ jobs:
     runs-on: ubuntu-latest
     container: 
       image: veracode/api-signing:latest
+      options: --user root
     steps:
       # Note: this will only work up to about 500 flaws
       #		due to Veracode results limiting
@@ -82,7 +83,7 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
-        
+
       - name: Upload filtered scan results
         if: always()
         uses: actions/upload-artifact@v4
