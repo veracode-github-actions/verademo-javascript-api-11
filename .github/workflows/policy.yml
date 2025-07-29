@@ -60,7 +60,7 @@ jobs:
       #		for a more elaborate method
       - name: get policy flaws
         run: |
-          cd /tmp
+          cd ${{ github.workspace }}
           export VERACODE_API_KEY_ID=${{ secrets.VID }}
           export VERACODE_API_KEY_SECRET=${{ secrets.VKEY }}
           guid=$(http --auth-type veracode_hmac GET "https://api.veracode.com/appsec/v1/applications?name=Recent" | jq -r '._embedded.applications[0].guid') 
@@ -68,7 +68,7 @@ jobs:
           total_flaws=$(http --auth-type veracode_hmac GET "https://api.veracode.com/appsec/v2/applications/${guid}/findings?scan_type=STATIC&violates_policy=True" | jq -r '.page.total_elements')
           echo TOTAL_FLAWS: ${total_flaws}
           http --auth-type veracode_hmac GET "https://api.veracode.com/appsec/v2/applications/${guid}/findings?scan_type=STATIC&violates_policy=True&size=${total_flaws}" > results.json
-          ls -lh /tmp/results.json
+          ls -lh results.json
 
       - name: Upload filtered scan results
         if: always()
