@@ -96,6 +96,7 @@ jobs:
         id: convert
         uses: veracode/veracode-pipeline-scan-results-to-sarif@v2.0.4
         with:
+          scan-type: policy
           pipeline-results-json: results.json
 
       - name: Upload SARIF
