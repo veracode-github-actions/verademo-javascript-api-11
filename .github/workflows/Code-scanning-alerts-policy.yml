@@ -1,15 +1,15 @@
 # This script does Autopackaging, policy scan, upload the results to the code scanning alerts
 
-name: Veracode Auto-Packaging and Scan
+# name: Veracode Auto-Packaging and Scan
 
-on:
-  push:
-    branches:
-      - main  # Change branch if needed
-  pull_request:
+# on:
+#   push:
+#     branches:
+#       - main  # Change branch if needed
+#   pull_request:
 
-permissions: 
-    security-events: write
+# permissions: 
+#     security-events: write
 
 jobs:
   veracode-scan:
