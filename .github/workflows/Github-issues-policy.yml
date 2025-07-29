@@ -49,6 +49,7 @@ jobs:
       #       publishedscansonly: 'true'
 
   get-policy-flaws:
+    needs: veracode-scan
     runs-on: ubuntu-latest
     container: 
       image: veracode/api-signing:latest
